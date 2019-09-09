@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=cifar10-overcap
 #SBATCH --output=logs.out
+#SBATCH --error=logs.err
 #SBATCH --gres gpu:1
 #SBATCH --partition=short
 #SBATCH --signal=USR1@600
