@@ -1,6 +1,6 @@
 # skynet-overcap-example
 
-In order to use more GPUs than a give lab has, you can submit to with `--qos=overcap`.  This will make the job interruptible however!
+In order to use more GPUs than your lab has, you can submit to with `--qos=overcap`.  This will make the job interruptible however!
 
 
 Interruptible jobs require some amount of extra overhead.  This example shows how I like to manage interruptible jobs.  Note that
@@ -25,5 +25,5 @@ uninterruptible to free GPUs for a labmate :)
 
 However, the best way to debug it is to submit the job
 with a time-limit of 11 minutes, i.e. `--time=11:00`.  `--signal=USR1@600` will also cause SLURM to send
-`SIGUSR1` when the jobs has 10 minutes (600 seconds) of runtime left. As far as SLURM as concerned,
+`SIGUSR1` when the jobs has 10 minutes (600 seconds) of runtime left. As far as SLURM is concerned,
 interruption due to timelimit and overcap preemption are exactly the same!
