@@ -9,7 +9,7 @@
 #SBATCH --acount=overcap
 
 # "--signal=USR1@300" sends a signal to the job _step_ when it needs to exit.
-# It has 5 minutes to do so, otherwise it is forcability killed
+# It has 5 minutes to do so, otherwise it is forcibly killed
 
 # This srun is critical!  The signal won't be sent correctly otherwise
 srun python -u -m overcap_example.train_cifar10
