@@ -1,5 +1,4 @@
 import torch
-import torch.distributed as distrib
 import torch.nn.functional as F
 import torchvision
 import torchvision.transforms as T
@@ -10,6 +9,7 @@ from overcap_example.interruptible_utils import (
     REQUEUE,
     get_requeue_state,
     init_handlers,
+    save_state,
     save_and_requeue,
 )
 
@@ -102,6 +102,15 @@ def main():
 
         if ((step + 1) % eval_every) == 0:
             eval_epoch(model, val_loader)
+
+            # Also save on every evaluation incase of preemption
+            save_state(
+                dict(
+                    model_state=model.state_dict(),
+                    optim_state=optimizer.state_dict(),
+                    step=step,
+                )
+            )
 
         if EXIT.is_set():
             break

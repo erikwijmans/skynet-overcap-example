@@ -38,6 +38,10 @@ def init_handlers():
     signal.signal(signal.SIGUSR2, _clean_exit_handler)
 
 
+def save_state(state_dict):
+    torch.save(state_dict, STATE_FILE)
+
+
 def save_and_requeue(state_dict):
     torch.save(state_dict, STATE_FILE)
     print("requeuing job " + os.environ["SLURM_JOB_ID"])
