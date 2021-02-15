@@ -1,6 +1,6 @@
 # skynet-overcap-example
 
-In order to use more GPUs than a give lab has, you can submit with `--account=overcap`.  This will make the job interruptible however!
+In order to use more GPUs than a give lab has, you can submit with `--account=overcap --partition=overcap` (or `-A overcap -p overcap` for short).  This will make the job interruptible however!
 
 Interruptible jobs require some amount of extra overhead.  This example shows how I like to manage interruptible jobs. 
 Exact reproducibility is very, very difficult with interruptible jobs and this example does not seek to cover exact reproducibility.  Note that I
@@ -38,22 +38,24 @@ Jobs that are in queue can be moved either to overcap or back to your labs accou
 to overcap that has job id `<job_id>`, run
 
 ```bash
-scontrol update job <job_id> account=overcap qos=overcap
+scontrol update job <job_id> account=overcap qos=overcap partition=overcap
 ```
 
-To move a job to your lab's account, you will first need to figure out your lab's account name.
+To move a job to your lab's account, you will first need to figure out your lab's account name and QOS.
 This can be figured out as follows:
 
 ```bash
-> sacctmgr -nP show user ewijmans3 format=DefaultAccount
-cvmlp-lab
+>  sacctmgr -P show assoc where user=$(whoami) format=Account,DefaultQOS
+Account|Def QOS
+overcap|overcap
+cvmlp-lab|cvmlp-user-limits
 ```
 
-Your user's default account will be set to your lab's account. Once you know your lab's account name,
+So I am in `cvmlp-lab` and the QOS for my jobs is `cvmlp-user-limits`. Once you know your lab's account name,
 you can move a job to it via
 
 ```bash
-scontrol update job <job_id> account=cvmlp-lab qos=normal
+scontrol update job <job_id> account=cvmlp-lab qos=cvmlp-user-limits partition=short
 ```
 
 Note that SLURM will not let you create an invalid job specification, but it may fail silently.
