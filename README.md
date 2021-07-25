@@ -26,10 +26,9 @@ with a time-limit of 10 minutes, i.e. `time=10:00`.  `--signal=USR1@300` will al
 `SIGUSR1` when the jobs has 5 minutes (300 seconds) of runtime left. 
 
 
-Above will test your interrupt due to timelimit reached, this is very similar to preemption due to overcap (and feasible to simulate)
-but not precisely the same.  On preemption due to overcap, the job will simply be killed and then slurm will automatically requeue the job
+Above will test your interrupt due to timelimit reached or preemption.  In addition, if you'd only like to have your job requeued due to preemption, the job will simply be killed and then slurm will automatically requeue the job
 (assuming `#SBATCH --requeue` is in the batch script).  In order to still have a state to resume from, you will need to save out the
-state of the job periodically.
+state of the job periodically.  If you requeue the job manually via a signal, slurm will no automatically requeue it so it is safe to have both a signal handler and `#SBATCH --requeue`.
 
 
 ## Moving jobs between overcap and your lab's account
