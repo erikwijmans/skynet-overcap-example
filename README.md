@@ -2,7 +2,7 @@
 
 In order to use more GPUs than a give lab has, you can submit with `--account=overcap --partition=overcap` (or `-A overcap -p overcap` for short).  This will make the job interruptible however!
 
-Interruptible jobs require some amount of extra overhead.  This example shows how I like to manage interruptible jobs. 
+Interruptible jobs require some amount of extra overhead.  This example shows how I like to manage interruptible jobs.
 Exact reproducibility is very, very difficult with interruptible jobs and this example does not seek to cover exact reproducibility.  Note that I
 have never seen interruption harm approximate reproducibility (for instance, getting very similar accuracy in supervised learning).
 
@@ -23,7 +23,7 @@ to free GPUs for a labmate :)
 
 However, the best way to debug it is to submit the job
 with a time-limit of 10 minutes, i.e. `time=10:00`.  `--signal=USR1@300` will also cause slurm to send
-`SIGUSR1` when the jobs has 5 minutes (300 seconds) of runtime left. 
+`SIGUSR1` when the jobs has 5 minutes (300 seconds) of runtime left.
 
 
 Above will test your interrupt due to timelimit reached or preemption.  In addition, if you'd only like to have your job requeued due to preemption, the job will simply be killed and then slurm will automatically requeue the job
@@ -58,3 +58,9 @@ scontrol update job <job_id> account=cvmlp-lab qos=cvmlp-user-limits partition=s
 ```
 
 Note that SLURM will not let you create an invalid job specification, but it may fail silently.
+
+## Multiple job steps plus slurm job array example
+
+See `overcap_multi_job_step.sh` for an example of launching a slurm job array of 4 job steps divided among 2 slurm job allocations. Jobs 1 and 2 are parallel job steps running on the same slurm job (e.g. same node and GPU with '$SLURM_ARRAY_TASK_ID' having value 1). Similarly jobs 3 and 4 share the second slurm job allocation with '$SLURM_ARRAY_TASK_ID' having value 2.
+
+When submitted using `sbatch overcap_multi_job_step.sh`, the entire job array has a single parent slurm JOBID (e.g.: 1000). Each of the 2 elements of the job array have individual slurm JOBIDs in the format 'JOBID_$SLURM_ARRAY_TASK_ID' (e.g. 1000_1 for first job and 1000_2 for second job). This allows for sending signals to each individual job array element (e.g. `scancel 1000_2 --signal USR1` sends USR1 to only the second job allocation which in turn is relayed to jobs 3 and 4).
